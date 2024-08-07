@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { getTemperature } from "./utils";
+import { CtoF, getWetBulbTemperature } from "./utils";
 
 const app = express();
 app.use(cors({ origin: ["http://127.0.0.1:5500"] }));
@@ -15,11 +15,10 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-app.get("/temperature", async (req, res) => {
+app.get("/wbt", async (req, res) => {
   try {
-    console.log(req.params)
-    const temperature = await getTemperature();
-    res.send(`${temperature}&deg;F`);
+    const temperature = await getWetBulbTemperature();
+    res.send(`${CtoF(temperature).toFixed(2)}°F`);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
