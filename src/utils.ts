@@ -45,10 +45,8 @@ const getWetBulbGlobeTemperature = async (
 ): Promise<number> => {
   const Tw = await getWetBulbTemperature(location);
   const { Ta, RH, C, SR } = await getData(location);
-  console.log({ Ta, RH, C, SR });
   const Tg = 0.01498 * SR * (1 - C) + 1.184 * Ta - 0.0789 * RH - 2.739;
   const wbgt = 0.7 * Tw + 0.2 * Tg + 0.1 * Ta;
-  console.log({ Tw, Tg, wbgt });
   return wbgt;
 };
 

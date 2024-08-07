@@ -70,7 +70,7 @@ app.get("/wbgt", async (req, res) => {
           hx-trigger="location-updated from:body"
           hx-include="#latitude, #longitude"
           hx-swap="outerHTML"
-          id="wbt"
+          id="wbgt"
           class="cat${category}"
         >
           ${CtoF(temperature).toFixed(2)}&deg;F
