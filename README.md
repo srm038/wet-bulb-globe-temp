@@ -1,6 +1,8 @@
-# Wet Bulb Temperature
+# Wet Bulb Globe Temperature
 
 ![Bun](https://img.shields.io/badge/Bun-%23000000.svg?style=for-the-badge&logo=bun&logoColor=white) ![HTMX](https://img.shields.io/badge/HTMX-000000.svg?style=for-the-badge&logo=htmx&logoColor=white&color=%233366CC)
+
+This project calculates the [web bulb globe temperature](https://en.wikipedia.org/wiki/Wet-bulb_globe_temperature) for the user's location.
 
 To install dependencies:
 
