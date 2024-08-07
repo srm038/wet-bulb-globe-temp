@@ -11,19 +11,19 @@
   <body>
     <div
       hx-get="http://localhost:3000/temperature"
-      hx-trigger="load, location-updated from:body"
+      hx-trigger="location-updated from:body"
       hx-include="#latitude, #longitude"
       id="temperature"
     ></div>
     <div
       hx-get="http://localhost:3000/humidity"
-      hx-trigger="load, location-updated from:body"
+      hx-trigger="location-updated from:body"
       hx-include="#latitude, #longitude"
       id="rh"
     ></div>
     <div
       hx-get="http://localhost:3000/wbt"
-      hx-trigger="load, location-updated from:body"
+      hx-trigger="location-updated from:body"
       hx-include="#latitude, #longitude"
       id="wbt"
     ></div>
