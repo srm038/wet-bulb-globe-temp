@@ -1,5 +1,9 @@
 import { expect, test, describe } from "bun:test";
 import {
+  calculatePder,
+  calculatePhit,
+  calculateVaporPressureIce,
+  calculateVaporPressureWater,
   calculateWetBulbGlobeTemperature,
   calculateWetBulbTemperature,
   CtoF,
@@ -23,13 +27,33 @@ describe("temperature", () => {
 
 describe("calculations", () => {
   test("calculateWetBulbTemperature", () => {
-    const Tw = calculateWetBulbTemperature(25, 40);
+    const Tw = calculateWetBulbTemperature(25, 20, 40, 1000);
     expect(Tw).toBeCloseTo(16.384);
   });
 
   test("calculateWetBulbGlobeTemperature", () => {
-    const wbgt = calculateWetBulbGlobeTemperature(800, 10, 25, 50);
-    expect(wbgt).toBeCloseTo(23, -1);
+    const wbgt = calculateWetBulbGlobeTemperature(800, 20, FtoC(100), FtoC(78), 38, 1000);
+    expect(wbgt).toBeCloseTo(FtoC(88), -1);
+  });
+
+  test("calculateVaporPressureWater", () => {
+    const vp = calculateVaporPressureWater(25);
+    expect(vp).toBeCloseTo(31.82, 0);
+  });
+
+  test("calculateVaporPressureIce", () => {
+    const vp = calculateVaporPressureIce(-10);
+    expect(vp).toBeCloseTo(2.59, 0);
+  });
+
+  test("calculatePhit", () => {
+    const phit = calculatePhit(25, 50, 2.5);
+    expect(phit).toBeCloseTo(31.82, 0);
+  });
+
+  test("calculatePder", () => {
+    const pder = calculatePder(25, 50, 2.5);
+    expect(pder).toBeCloseTo(-6, 0);
   });
 });
 
