@@ -63,7 +63,7 @@ app.get("/wbgt", async (req, res) => {
         longitude: +req.query.longitude,
       };
       const temperature = await getWetBulbGlobeTemperature(location);
-      const category = getCategory(temperature);
+      const category = getCategory(CtoF(temperature));
       res.send(
         html`<div
           hx-get="http://localhost:3000/wbgt"

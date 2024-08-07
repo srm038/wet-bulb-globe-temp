@@ -63,10 +63,12 @@ const getCategory = (temperature: number): number => {
     return 2;
   } else if (temperature < 85) {
     return 3;
-  } else if (88 <= temperature && temperature < 90) {
+  } else if (temperature < 88) {
     return 4;
+  } else if (temperature <= 90) {
+    return 5;
   }
-  return 5;
+  return 0;
 };
 
 const calculateWetBulbTemperature = (

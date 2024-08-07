@@ -86,6 +86,6 @@ describe("live data", () => {
 test("getCategory", () => {
   expect(getCategory(81)).toBe(1);
   expect(getCategory(83)).toBe(3);
-  expect(getCategory(88)).toBe(4);
+  expect(getCategory(86)).toBe(4);
   expect(getCategory(90)).toBe(5);
 });
