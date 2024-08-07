@@ -7,31 +7,33 @@
       crossorigin="anonymous"
     ></script>
     <meta name="htmx-config" content='{"selfRequestsOnly": false}' />
+    <link rel="stylesheet" type="text/css" href="./styles.css" />
   </head>
   <body>
-    <div
-      hx-get="http://localhost:3000/temperature"
-      hx-trigger="location-updated from:body"
-      hx-include="#latitude, #longitude"
-      id="temperature"
-    ></div>
-    <div
-      hx-get="http://localhost:3000/humidity"
-      hx-trigger="location-updated from:body"
-      hx-include="#latitude, #longitude"
-      id="rh"
-    ></div>
-    <div
-      hx-get="http://localhost:3000/wbt"
-      hx-trigger="location-updated from:body"
-      hx-include="#latitude, #longitude"
-      id="wbt"
-    ></div>
-
-    <form id="location">
-      <input type="hidden" id="latitude" name="latitude" />
-      <input type="hidden" id="longitude" name="longitude" />
-    </form>
+    <div id="container">
+      <div id="location">
+        <input id="latitude" name="latitude" readonly />
+        <input id="longitude" name="longitude" readonly />
+      </div>
+      <div
+        hx-get="http://localhost:3000/temperature"
+        hx-trigger="location-updated from:body"
+        hx-include="#latitude, #longitude"
+        id="temperature"
+      ></div>
+      <div
+        hx-get="http://localhost:3000/humidity"
+        hx-trigger="location-updated from:body"
+        hx-include="#latitude, #longitude"
+        id="rh"
+      ></div>
+      <div
+        hx-get="http://localhost:3000/wbt"
+        hx-trigger="location-updated from:body"
+        hx-include="#latitude, #longitude"
+        id="wbt"
+      ></div>
+    </div>
 
     <script>
       if (navigator.geolocation) {
