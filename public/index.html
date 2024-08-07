@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <title>Wet Bulb Temperature</title>
+    <script
+      src="https://unpkg.com/htmx.org@2.0.1"
+      integrity="sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/"
+      crossorigin="anonymous"
+    ></script>
+    <meta name="htmx-config" content='{"selfRequestsOnly": false}' />
+  </head>
+  <body>
+    <div
+      hx-get="http://localhost:3000/temperature"
+      hx-trigger="load, location-updated from:body"
+      id="temperature"
+    ></div>
+  </body>
+</html>
