@@ -14,5 +14,15 @@
       hx-trigger="load, location-updated from:body"
       id="temperature"
     ></div>
+    <div
+      hx-get="http://localhost:3000/humidity"
+      hx-trigger="load, location-updated from:body"
+      id="rh"
+    ></div>
+    <div
+      hx-get="http://localhost:3000/wbt"
+      hx-trigger="load, location-updated from:body"
+      id="wbt"
+    ></div>
   </body>
 </html>
