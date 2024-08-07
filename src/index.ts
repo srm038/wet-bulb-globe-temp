@@ -1,7 +1,10 @@
 import express from "express";
-import axios from "axios";
+import cors from "cors";
+import { getTemperature } from "./utils";
 
 const app = express();
+app.use(cors({ origin: ["http://127.0.0.1:5500"] }));
+app.use(express.json());
 const port = 3000;
 
 app.get("/", (req, res) => {
@@ -14,16 +17,11 @@ app.listen(port, () => {
 
 app.get("/temperature", async (req, res) => {
   try {
-    const location = req.query.location; // Assuming the location is passed as a query parameter
-
-    const response = await axios.get(
-      `https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m&temperature_unit=fahrenheit`
-    );
-    const temperature = response.data.current.temperature_2m;
-
-    res.send(temperature);
+    console.log(req.params)
+    const temperature = await getTemperature();
+    res.send(`${temperature}&deg;F`);
   } catch (error) {
-    console.error("Error fetching temperature:", error);
-    res.status(500).send("Failed to fetch temperature");
+    console.log(error);
+    res.sendStatus(500);
   }
 });
