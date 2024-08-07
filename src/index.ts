@@ -12,7 +12,7 @@ import {
 const html = String.raw;
 
 const app = express();
-app.use(cors({ origin: ["http://127.0.0.1:5500"] }));
+app.use(cors({ origin: ["http://127.0.0.1:5500", "null"] }));
 app.use(express.json());
 const port = 3000;
 
