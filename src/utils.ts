@@ -31,22 +31,15 @@ const getData = async ({
 
 const getWetBulbTemperature = async (location: LatLong): Promise<number> => {
   const { Ta, RH } = await getData(location);
-  const Tw =
-    Ta * Math.atan(0.151977 * (RH + 8.313659) ** 0.5) +
-    Math.atan(Ta + RH) -
-    Math.atan(RH - 1.676331) +
-    0.00391838 * RH ** 1.5 * Math.atan(0.023101 * RH) -
-    4.686035;
+  const Tw = calculateWetBulbTemperature(Ta, RH);
   return Tw;
 };
 
 const getWetBulbGlobeTemperature = async (
   location: LatLong
 ): Promise<number> => {
-  const Tw = await getWetBulbTemperature(location);
   const { Ta, RH, C, SR } = await getData(location);
-  const Tg = 0.01498 * SR * (1 - C) + 1.184 * Ta - 0.0789 * RH - 2.739;
-  const wbgt = 0.7 * Tw + 0.2 * Tg + 0.1 * Ta;
+  const wbgt = calculateWetBulbGlobeTemperature(SR, C, Ta, RH);
   return wbgt;
 };
 
@@ -60,11 +53,33 @@ const getCategory = (temperature: number): number => {
     return 2;
   } else if (temperature < 85) {
     return 3;
-  } else if (88 < temperature && temperature < 90) {
+  } else if (88 <= temperature && temperature < 90) {
     return 4;
   }
   return 5;
 };
+
+function calculateWetBulbTemperature(Ta: number, RH: number) {
+  return (
+    Ta * Math.atan(0.151977 * (RH + 8.313659) ** 0.5) +
+    Math.atan(Ta + RH) -
+    Math.atan(RH - 1.676331) +
+    0.00391838 * RH ** 1.5 * Math.atan(0.023101 * RH) -
+    4.686035
+  );
+}
+
+function calculateWetBulbGlobeTemperature(
+  SR: number,
+  C: number,
+  Ta: number,
+  RH: number
+) {
+  const Tw = calculateWetBulbTemperature(Ta, RH);
+  const Tg = 0.01498 * SR * (1 - C / 100) + 1.184 * Ta - 0.0789 * RH - 2.739;
+  const wbgt = 0.7 * Tw + 0.2 * Tg + 0.1 * Ta;
+  return wbgt;
+}
 
 export {
   getData,
@@ -73,4 +88,6 @@ export {
   CtoF,
   getCategory,
   getWetBulbGlobeTemperature,
+  calculateWetBulbGlobeTemperature,
+  calculateWetBulbTemperature,
 };
