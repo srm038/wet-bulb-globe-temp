@@ -1,6 +1,15 @@
 import express from "express";
 import cors from "cors";
-import { CtoF, getData, getWetBulbTemperature, type LatLong } from "./utils";
+import {
+  CtoF,
+  getCategory,
+  getData,
+  getWetBulbGlobeTemperature,
+  getWetBulbTemperature,
+  type LatLong,
+} from "./utils";
+
+const html = String.raw;
 
 const app = express();
 app.use(cors({ origin: ["http://127.0.0.1:5500"] }));
@@ -25,12 +34,53 @@ app.get("/wbt", async (req, res) => {
       longitude: +req.query.longitude,
     };
     const temperature = await getWetBulbTemperature(location);
-    res.send(`${CtoF(temperature).toFixed(2)}°F`);
+    const category = getCategory(temperature);
+    res.send(
+      html`<div
+        hx-get="http://localhost:3000/wbt"
+        hx-trigger="location-updated from:body"
+        hx-include="#latitude, #longitude"
+        hx-swap="outerHTML"
+        id="wbt"
+        class="cat${category}"
+      >
+        ${CtoF(temperature).toFixed(2)}&deg;F
+      </div>`.toString()
+    );
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
   }
 });
+
+app.get("/wbgt", async (req, res) => {
+    try {
+      if (!req.query.latitude || !req.query.longitude) {
+        throw new Error("Location is required");
+      }
+      const location: LatLong = {
+        latitude: +req.query.latitude,
+        longitude: +req.query.longitude,
+      };
+      const temperature = await getWetBulbGlobeTemperature(location);
+      const category = getCategory(temperature);
+      res.send(
+        html`<div
+          hx-get="http://localhost:3000/wbgt"
+          hx-trigger="location-updated from:body"
+          hx-include="#latitude, #longitude"
+          hx-swap="outerHTML"
+          id="wbt"
+          class="cat${category}"
+        >
+          ${CtoF(temperature).toFixed(2)}&deg;F
+        </div>`.toString()
+      );
+    } catch (error) {
+      console.log(error);
+      res.sendStatus(500);
+    }
+  });
 
 app.get("/temperature", async (req, res) => {
   try {
@@ -46,8 +96,8 @@ app.get("/temperature", async (req, res) => {
       latitude: +req.query.latitude,
       longitude: +req.query.longitude,
     };
-    const { temperature_2m } = await getData(location);
-    res.send(`${CtoF(temperature_2m).toFixed(2)}°F`);
+    const { Ta } = await getData(location);
+    res.send(`${CtoF(Ta).toFixed(2)}&deg;F`);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
@@ -63,8 +113,8 @@ app.get("/humidity", async (req, res) => {
       latitude: +req.query.latitude,
       longitude: +req.query.longitude,
     };
-    const { relative_humidity_2m } = await getData(location);
-    res.send(`${relative_humidity_2m.toFixed(0)}%`);
+    const { RH } = await getData(location);
+    res.send(`${RH.toFixed(0)}%`);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
