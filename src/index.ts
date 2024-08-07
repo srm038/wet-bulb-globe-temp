@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { CtoF, getData, getWetBulbTemperature } from "./utils";
+import { CtoF, getData, getWetBulbTemperature, type LatLong } from "./utils";
 
 const app = express();
 app.use(cors({ origin: ["http://127.0.0.1:5500"] }));
@@ -17,7 +17,14 @@ app.listen(port, () => {
 
 app.get("/wbt", async (req, res) => {
   try {
-    const temperature = await getWetBulbTemperature();
+    if (!req.query.latitude || !req.query.longitude) {
+      throw new Error("Location is required");
+    }
+    const location: LatLong = {
+      latitude: +req.query.latitude,
+      longitude: +req.query.longitude,
+    };
+    const temperature = await getWetBulbTemperature(location);
     res.send(`${CtoF(temperature).toFixed(2)}°F`);
   } catch (error) {
     console.log(error);
@@ -27,7 +34,19 @@ app.get("/wbt", async (req, res) => {
 
 app.get("/temperature", async (req, res) => {
   try {
-    const { temperature_2m } = await getData();
+    if (
+      !req.query.latitude ||
+      !req.query.longitude ||
+      req.query.latitude === "" ||
+      req.query.longitude === ""
+    ) {
+      throw new Error("Location is required");
+    }
+    const location: LatLong = {
+      latitude: +req.query.latitude,
+      longitude: +req.query.longitude,
+    };
+    const { temperature_2m } = await getData(location);
     res.send(`${CtoF(temperature_2m).toFixed(2)}°F`);
   } catch (error) {
     console.log(error);
@@ -37,7 +56,14 @@ app.get("/temperature", async (req, res) => {
 
 app.get("/humidity", async (req, res) => {
   try {
-    const { relative_humidity_2m } = await getData();
+    if (!req.query.latitude || !req.query.longitude) {
+      throw new Error("Location is required");
+    }
+    const location: LatLong = {
+      latitude: +req.query.latitude,
+      longitude: +req.query.longitude,
+    };
+    const { relative_humidity_2m } = await getData(location);
     res.send(`${relative_humidity_2m.toFixed(0)}%`);
   } catch (error) {
     console.log(error);

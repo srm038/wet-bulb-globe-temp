@@ -12,17 +12,40 @@
     <div
       hx-get="http://localhost:3000/temperature"
       hx-trigger="load, location-updated from:body"
+      hx-include="#latitude, #longitude"
       id="temperature"
     ></div>
     <div
       hx-get="http://localhost:3000/humidity"
       hx-trigger="load, location-updated from:body"
+      hx-include="#latitude, #longitude"
       id="rh"
     ></div>
     <div
       hx-get="http://localhost:3000/wbt"
       hx-trigger="load, location-updated from:body"
+      hx-include="#latitude, #longitude"
       id="wbt"
     ></div>
+
+    <form id="location">
+      <input type="hidden" id="latitude" name="latitude" />
+      <input type="hidden" id="longitude" name="longitude" />
+    </form>
+
+    <script>
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          document.getElementById("latitude").value = position.coords.latitude;
+          document.getElementById("longitude").value =
+            position.coords.longitude;
+
+          // Dispatch a custom event to trigger the HTMX request
+          document.body.dispatchEvent(new Event("location-updated"));
+        });
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    </script>
   </body>
 </html>
