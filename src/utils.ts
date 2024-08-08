@@ -172,6 +172,8 @@ const calculatePder = (Tw: number, Ta: number, Pa: number) => {
   }
 };
 
+const html = String.raw;
+
 export {
   getData,
   getWetBulbTemperature,
@@ -185,4 +187,5 @@ export {
   calculateVaporPressureIce,
   calculatePhit,
   calculatePder,
+  html,
 };

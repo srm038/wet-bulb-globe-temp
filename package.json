@@ -17,6 +17,6 @@
   },
   "scripts":{ 
     "dev": "bun run src/index.ts",
-    "dev:watch": "bun run src/index.ts --watch"
+    "dev:watch": "bun run --hot src/index.ts"
   }
 }
