@@ -56,8 +56,8 @@ const getWetBulbGlobeTemperature = async (
 const FtoC = (F: number) => (F - 32) * (5 / 9);
 const CtoF = (C: number) => C * (9 / 5) + 32;
 
-const getCategory = (temperature: number): number => {
-  if (temperature < 82) {
+const getCategory = (temperature: number): number | undefined => {
+  if (temperature < 80) {
     return 1;
   } else if (temperature < 82) {
     return 2;
@@ -65,10 +65,9 @@ const getCategory = (temperature: number): number => {
     return 3;
   } else if (temperature < 88) {
     return 4;
-  } else if (temperature <= 90) {
+  } else if (temperature >= 90) {
     return 5;
   }
-  return 0;
 };
 
 const calculateWetBulbTemperature = (

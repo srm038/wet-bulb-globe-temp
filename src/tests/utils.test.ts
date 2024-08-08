@@ -49,6 +49,9 @@ describe("calculations", () => {
   test("calculatePhit", () => {
     const phit = calculatePhit(25, 50, 2.5);
     expect(phit).toBeCloseTo(31.82, 0);
+    
+    const phit2 = calculatePhit(0, 50, 2.5);
+    expect(phit2).toBeCloseTo(6.11, 0);
   });
 
   test("calculatePder", () => {
@@ -84,7 +87,8 @@ describe("live data", () => {
 });
 
 test("getCategory", () => {
-  expect(getCategory(81)).toBe(1);
+  expect(getCategory(79)).toBe(1);
+  expect(getCategory(81)).toBe(2);
   expect(getCategory(83)).toBe(3);
   expect(getCategory(86)).toBe(4);
   expect(getCategory(90)).toBe(5);
