@@ -7,23 +7,18 @@ This project calculates the [web bulb globe temperature](https://en.wikipedia.or
 To install dependencies:
 
 ```bash
-cd src
 bun install
 ```
 
 To run:
 
 ```bash
-cd src
-bun run index.ts
+bun run src/index.ts
 ```
-
-The main landing page `public/index.html` can be served with an extention like [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) or opened directly in the browser.
 
 Test the utility functions via:
 
 ```bash
-cd src
 bun test --coverage
 ```
 
