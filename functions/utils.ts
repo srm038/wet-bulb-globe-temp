@@ -50,10 +50,10 @@ export const FtoC = (F: number) => (F - 32) * (5 / 9);
 export const CtoF = (C: number) => C * (9 / 5) + 32;
 
 export const getCategory = (temperature: number): number | undefined => {
-  if (temperature < 80) return 1;
-  if (temperature < 82) return 2;
-  if (temperature < 85) return 3;
-  if (temperature < 88) return 4;
+  if (temperature < 82) return 1;
+  if (temperature < 85) return 2;
+  if (temperature < 88) return 3;
+  if (temperature < 90) return 4;
   if (temperature >= 90) return 5;
 };
 

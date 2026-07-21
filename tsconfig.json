@@ -25,5 +25,5 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
   },
-  "include": ["src/**/*.ts", "functions/**/*.ts"]
+  "include": ["functions/**/*.ts"]
 }

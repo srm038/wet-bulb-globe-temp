@@ -42,6 +42,7 @@ div#wbgt {
   }
   &.cat2 {
     background-color: green;
+    color: white;
   }
   &.cat3 {
     background-color: yellow;
