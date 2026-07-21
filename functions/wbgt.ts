@@ -1,4 +1,4 @@
-import { getWetBulbGlobeTemperature, CtoF, getCategory } from "./utils";
+import { CtoF, getCategory, getWetBulbGlobeTemperature } from "./utils";
 
 const html = String.raw;
 
@@ -19,7 +19,7 @@ export const onRequest: PagesFunction = async (context) => {
     const category = getCategory(CtoF(temperature));
     const body = html`<div
       hx-get="/wbgt"
-      hx-trigger="location-updated from:body"
+      hx-trigger="location-updated from:body, every 15m"
       hx-include="#latitude, #longitude"
       hx-swap="outerHTML"
       id="wbgt"

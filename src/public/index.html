@@ -20,12 +20,22 @@
         <input id="latitude" name="latitude" readonly />
         <input id="longitude" name="longitude" readonly />
       </div>
-      <div hx-get="/temperature" id="temperature"
-      hx-trigger="location-updated from:body, load"></div>
-      <div hx-get="/humidity" id="rh"
-      hx-trigger="location-updated from:body, load"></div>
-      <div hx-get="/wbgt" hx-swap="outerHTML" id="wbgt"
-      hx-trigger="location-updated from:body, load"></div>
+      <div
+        hx-get="/temperature"
+        id="temperature"
+        hx-trigger="location-updated from:body, load, every 15m"
+      ></div>
+      <div
+        hx-get="/humidity"
+        id="rh"
+        hx-trigger="location-updated from:body, load, every 15m"
+      ></div>
+      <div
+        hx-get="/wbgt"
+        hx-swap="outerHTML"
+        id="wbgt"
+        hx-trigger="location-updated from:body, load, every 15m"
+      ></div>
     </div>
 
     <script>
