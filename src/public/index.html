@@ -11,30 +11,16 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body hx-ext="head-support">
-    <div
-      id="container"
-      hx-trigger="location-updated from:body, load"
-      hx-include="#latitude, #longitude"
-    >
+    <div id="container">
       <div id="location">
         <input id="latitude" name="latitude" readonly />
         <input id="longitude" name="longitude" readonly />
       </div>
       <div
-        hx-get="/temperature"
-        id="temperature"
-        hx-trigger="location-updated from:body, load, every 15m"
-      ></div>
-      <div
-        hx-get="/humidity"
-        id="rh"
-        hx-trigger="location-updated from:body, load, every 15m"
-      ></div>
-      <div
-        hx-get="/wbgt"
-        hx-swap="outerHTML"
-        id="wbgt"
-        hx-trigger="location-updated from:body, load, every 15m"
+        id="metrics"
+        hx-get="/data"
+        hx-trigger="load"
+        hx-include="#latitude, #longitude"
       ></div>
     </div>
 
