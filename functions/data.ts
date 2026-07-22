@@ -1,11 +1,82 @@
 import {
-  getData,
+  calculateWetBulbGlobeTemperature,
   CtoF,
   getCategory,
-  getWetBulbGlobeTemperature,
+  getData,
 } from "./utils";
 
 const html = String.raw;
+
+const WBGT_MIN = 60;
+const WBGT_MAX = 100;
+const WBGT_RANGE = WBGT_MAX - WBGT_MIN;
+
+const catColor: Record<number, string> = {
+  1: "#95a5a6",
+  2: "#27ae60",
+  3: "#f1c40f",
+  4: "#e74c3c",
+  5: "#1a1a1a",
+};
+
+const catBoundary = [82, 85, 88, 90];
+
+function wbgtTrackGradient(): string {
+  const stops: string[] = [];
+  let prev = WBGT_MIN;
+  for (const boundary of catBoundary) {
+    const cat = getCategory(boundary - 0.1)!;
+    const startDeg = 90 + ((prev - WBGT_MIN) / WBGT_RANGE) * 180;
+    const endDeg = 90 + ((boundary - WBGT_MIN) / WBGT_RANGE) * 180;
+    stops.push(`${catColor[cat]} ${startDeg}deg ${endDeg}deg`);
+    prev = boundary;
+  }
+  const startDeg = 90 + ((prev - WBGT_MIN) / WBGT_RANGE) * 180;
+  stops.push(`${catColor[5]} ${startDeg}deg 270deg`);
+  return `conic-gradient(from 180deg at 50% 100%, ${stops.join(", ")})`;
+}
+
+const gauge = (
+  label: string,
+  value: number,
+  display: string,
+  cls: string,
+  min: number,
+  max: number,
+) => {
+  const pct = Math.max(0, Math.min(100, ((value - min) / (max - min)) * 100));
+  const angle = 90 + pct * 1.8;
+  return html` <div
+    class="gauge ${cls}"
+    style="--pct: ${pct}; --angle: ${angle}deg"
+  >
+    <div class="gauge-track">
+      <div class="gauge-fill"></div>
+      <div class="gauge-needle"></div>
+    </div>
+    <div class="gauge-value">${display}</div>
+    <div class="gauge-label">${label}</div>
+  </div>`;
+};
+
+const wbgtGauge = (wbgtF: number, category: number) => {
+  const pct = Math.max(
+    0,
+    Math.min(100, ((wbgtF - WBGT_MIN) / WBGT_RANGE) * 100),
+  );
+  const angle = 90 + pct * 1.8;
+  const trackGradient = wbgtTrackGradient();
+  return html` <div
+    class="gauge gauge--wbgt cat${category}"
+    style="--pct: ${pct}; --angle: ${angle}deg"
+  >
+    <div class="gauge-track" style="background: ${trackGradient}">
+      <div class="gauge-needle"></div>
+    </div>
+    <div class="gauge-value">${wbgtF.toFixed(1)}&deg;F</div>
+    <div class="gauge-label">WBGT</div>
+  </div>`;
+};
 
 export const onRequest: PagesFunction = async (context) => {
   const url = new URL(context.request.url);
@@ -18,25 +89,48 @@ export const onRequest: PagesFunction = async (context) => {
 
   try {
     const location = { latitude: +latitude, longitude: +longitude };
-    const [weather, wbgt] = await Promise.all([
-      getData(location),
-      getWetBulbGlobeTemperature(location),
-    ]);
+    const { Ta, RH, C, SR, Td, Pa } = await getData(location);
+    const wbgt = calculateWetBulbGlobeTemperature(SR, C, Ta, Td, RH, Pa);
+    const wbgtF = CtoF(wbgt);
+    const category = getCategory(wbgtF) ?? 1;
 
-    const category = getCategory(CtoF(wbgt));
-    const body = html`<div
-      id="metrics"
-      hx-get="/data"
-      hx-trigger="location-updated from:body, every 15m"
-      hx-include="#latitude, #longitude"
-      hx-swap="outerHTML"
-    >
-      <div id="temperature">${CtoF(weather.Ta).toFixed(2)}&deg;F</div>
-      <div id="rh">${weather.RH.toFixed(0)}%</div>
-      <div id="wbgt" class="cat${category}">
-        ${CtoF(wbgt).toFixed(2)}&deg;F
-      </div>
-    </div>`;
+    const body = html`
+      ${wbgtGauge(wbgtF, category)}
+      ${gauge(
+        "Temperature",
+        CtoF(Ta),
+        `${CtoF(Ta).toFixed(1)}°F`,
+        "gauge--temp",
+        -20,
+        120,
+      )}
+      ${gauge("Humidity", RH, `${RH.toFixed(0)}%`, "gauge--rh", 0, 100)}
+      ${gauge("Cloud Cover", C, `${C.toFixed(0)}%`, "gauge--cloud", 0, 100)}
+      ${gauge(
+        "Surface Pressure",
+        Pa,
+        `${Pa.toFixed(0)} hPa`,
+        "gauge--pressure",
+        950,
+        1050,
+      )}
+      ${gauge(
+        "Direct Radiation",
+        SR,
+        `${SR.toFixed(0)} W/m²`,
+        "gauge--radiation",
+        0,
+        1400,
+      )}
+      ${gauge(
+        "Dewpoint",
+        CtoF(Td),
+        `${CtoF(Td).toFixed(1)}°F`,
+        "gauge--dewpoint",
+        -20,
+        100,
+      )}
+    `;
 
     return new Response(body, {
       headers: { "Content-Type": "text/html;charset=utf-8" },

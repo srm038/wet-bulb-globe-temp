@@ -1,77 +1,251 @@
 body {
   font-family: "Courier New", Courier, monospace;
-  font-size: larger;
+  margin: 0;
+  padding: 2em 1em;
+  background: #f0ede5;
+  color: #222;
+  min-height: 100dvh;
 }
 
-div#container {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  justify-content: center;
-  align-items: center;
-  background-color: aliceblue;
+#container {
   width: max-content;
   margin: 0 auto;
-  padding: 3em;
-  border-radius: 0.5em;
-  > div {
-    margin: 1.5em;
-    padding: 1.5em;
-    border-radius: 0.5em;
-    width: 300px;
-    height: 1em;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-  }
-  div#location {
-    margin: 0;
-    padding: 0;
-    gap: 1em;
-    input {
-      text-align: center;
-      padding: 0;
-    }
-  }
-  div#metrics {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    padding: 0;
-    margin: 0;
-    width: auto;
-    height: auto;
-    > div {
-      margin: 1.5em;
-      padding: 1.5em;
-      border-radius: 0.5em;
-      width: 300px;
-      height: 1em;
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-    }
+}
+
+#location {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+  margin-bottom: 1.5em;
+  input {
+    text-align: center;
+    padding: 0.25em;
+    width: 10ch;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #999;
+    color: #222;
+    font-family: inherit;
+    font-size: inherit;
   }
 }
 
-div#wbgt {
+/* gauges grid */
+#metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75em;
+  justify-items: center;
+}
+
+/* WBGT spans full width */
+.gauge--wbgt {
+  grid-column: 1 / -1;
+}
+
+/* gauge base */
+.gauge {
+  --pct: 0;
+  --angle: 90deg;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25em;
+}
+
+/* semicircle track */
+.gauge-track {
+  position: relative;
+  width: clamp(120px, 24vw, 150px);
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+  border-radius: 999px 999px 0 0;
+  background: conic-gradient(
+    from 180deg at 50% 100%,
+    var(--gauge-color, #4cc9f0) 90deg,
+    var(--gauge-color, #4cc9f0) 270deg,
+    transparent 270deg
+  );
+}
+
+/* inner cutout */
+.gauge-track::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 75%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #f0ede5;
+  transform: translate(-50%, 50%);
+  z-index: 2;
+}
+
+/* colored arc */
+.gauge-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px 999px 0 0;
+  background: conic-gradient(
+    from 180deg at 50% 100%,
+    transparent 0deg,
+    transparent 90deg,
+    var(--gauge-color, #4cc9f0) 90deg,
+    var(--gauge-color, #4cc9f0) var(--angle),
+    transparent var(--angle)
+  );
+  z-index: 1;
+}
+
+/* needle */
+.gauge-needle {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 3px;
+  height: 88%;
+  background: #c0392b;
+  transform-origin: bottom center;
+  transform: translateX(-50%) rotate(calc((var(--pct) / 100 * 180 - 90) * 1deg));
+  transition: transform 0.8s ease-out;
+  z-index: 4;
+  border-radius: 2px;
+}
+
+/* center hub */
+.gauge-needle::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  background: #c0392b;
+  border-radius: 50%;
+}
+
+/* value text */
+.gauge-value {
+  position: relative;
+  z-index: 3;
+  font-size: 1.1em;
   font-weight: bold;
-  &.cat1 {
-    background-color: white;
-  }
-  &.cat2 {
-    background-color: green;
-    color: white;
-  }
-  &.cat3 {
-    background-color: yellow;
-  }
-  &.cat4 {
-    background-color: red;
-    color: white;
-  }
-  &.cat5 {
-    background-color: black;
-    color: white;
+}
+
+.gauge-label {
+  font-size: 0.75em;
+  opacity: 0.6;
+}
+
+/* WBGT is bigger */
+.gauge--wbgt .gauge-track {
+  width: clamp(200px, 50vw, 300px);
+}
+.gauge--wbgt .gauge-value {
+  font-size: 1.75em;
+}
+.gauge--wbgt .gauge-label {
+  font-size: 1em;
+}
+
+/* input gauge colors */
+.gauge--temp { --gauge-color: #f72585; }
+.gauge--rh { --gauge-color: #4361ee; }
+.gauge--rh .gauge-track {
+  background: conic-gradient(
+    from 180deg at 50% 100%,
+    #ffffff 90deg,
+    #1565c0 270deg,
+    transparent 270deg
+  );
+}
+.gauge--rh .gauge-fill {
+  display: none;
+}
+.gauge--cloud { --gauge-color: #7209b7; }
+.gauge--cloud .gauge-track {
+  background: conic-gradient(
+    from 180deg at 50% 100%,
+    #ffffff 90deg,
+    #616161 270deg,
+    transparent 270deg
+  );
+}
+.gauge--cloud .gauge-fill {
+  display: none;
+}
+.gauge--pressure { --gauge-color: #3a0ca3; }
+.gauge--pressure .gauge-track {
+  background: conic-gradient(
+    from 180deg at 50% 100%,
+    #ffffff 90deg,
+    #455a64 270deg,
+    transparent 270deg
+  );
+}
+.gauge--pressure .gauge-fill {
+  display: none;
+}
+.gauge--radiation { --gauge-color: #f77f00; }
+.gauge--radiation .gauge-track {
+  background: conic-gradient(
+    from 180deg at 50% 100%,
+    #ffffff 90deg,
+    #e65100 270deg,
+    transparent 270deg
+  );
+}
+.gauge--radiation .gauge-fill {
+  display: none;
+}
+.gauge--dewpoint { --gauge-color: #06d6a0; }
+.gauge--dewpoint .gauge-track {
+  background: conic-gradient(
+    from 180deg at 50% 100%,
+    #2196f3 90deg,
+    #ffffff 184deg,
+    #f44336 270deg,
+    transparent 270deg
+  );
+}
+.gauge--dewpoint .gauge-fill {
+  display: none;
+}
+
+/* temperature track — blue (cold) → white (32°F) → red (hot) */
+.gauge--temp .gauge-track {
+  background: conic-gradient(
+    from 180deg at 50% 100%,
+    #2196f3 90deg,
+    #ffffff 138deg,
+    #f44336 270deg,
+    transparent 270deg
+  );
+}
+.gauge--temp .gauge-fill {
+  display: none;
+}
+
+/* WBGT track — full category scale from load */
+.gauge--wbgt .gauge-track {
+  background: conic-gradient(
+    from 180deg at 50% 100%,
+    #95a5a6 90deg 189deg,
+    #27ae60 189deg 202.5deg,
+    #f1c40f 202.5deg 216deg,
+    #e74c3c 216deg 225deg,
+    #1a1a1a 225deg 270deg
+  );
+}
+.gauge--wbgt .gauge-fill {
+  display: none;
+}
+
+/* mobile: single column */
+@media (max-width: 500px) {
+  #metrics {
+    grid-template-columns: 1fr;
   }
 }
