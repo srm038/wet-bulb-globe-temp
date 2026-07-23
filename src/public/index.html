@@ -23,14 +23,14 @@
         hx-trigger="load, location-updated from:body, every 15m"
         hx-include="#latitude, #longitude"
       >
-        <div class="gauge gauge--wbgt" style="--pct: 0; --angle: 0deg">
+        <div id="gauge-wbgt" class="gauge gauge--wbgt" style="--pct: 0; --angle: 90deg">
           <div class="gauge-track">
             <div class="gauge-needle"></div>
           </div>
           <div class="gauge-value">&nbsp;</div>
           <div class="gauge-label">WBGT</div>
         </div>
-        <div class="gauge gauge--temp">
+        <div id="gauge-temp" class="gauge gauge--temp">
           <div class="gauge-track">
             <div class="gauge-fill"></div>
             <div class="gauge-needle"></div>
@@ -38,7 +38,7 @@
           <div class="gauge-value">&nbsp;</div>
           <div class="gauge-label">Temperature</div>
         </div>
-        <div class="gauge gauge--rh">
+        <div id="gauge-rh" class="gauge gauge--rh">
           <div class="gauge-track">
             <div class="gauge-fill"></div>
             <div class="gauge-needle"></div>
@@ -46,7 +46,7 @@
           <div class="gauge-value">&nbsp;</div>
           <div class="gauge-label">Humidity</div>
         </div>
-        <div class="gauge gauge--cloud">
+        <div id="gauge-cloud" class="gauge gauge--cloud">
           <div class="gauge-track">
             <div class="gauge-fill"></div>
             <div class="gauge-needle"></div>
@@ -54,7 +54,7 @@
           <div class="gauge-value">&nbsp;</div>
           <div class="gauge-label">Cloud Cover</div>
         </div>
-        <div class="gauge gauge--pressure">
+        <div id="gauge-pressure" class="gauge gauge--pressure">
           <div class="gauge-track">
             <div class="gauge-fill"></div>
             <div class="gauge-needle"></div>
@@ -62,7 +62,7 @@
           <div class="gauge-value">&nbsp;</div>
           <div class="gauge-label">Surface Pressure</div>
         </div>
-        <div class="gauge gauge--radiation">
+        <div id="gauge-radiation" class="gauge gauge--radiation">
           <div class="gauge-track">
             <div class="gauge-fill"></div>
             <div class="gauge-needle"></div>
@@ -70,7 +70,7 @@
           <div class="gauge-value">&nbsp;</div>
           <div class="gauge-label">Direct Radiation</div>
         </div>
-        <div class="gauge gauge--dewpoint">
+        <div id="gauge-dewpoint" class="gauge gauge--dewpoint">
           <div class="gauge-track">
             <div class="gauge-fill"></div>
             <div class="gauge-needle"></div>

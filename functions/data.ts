@@ -37,6 +37,7 @@ function wbgtTrackGradient(): string {
 }
 
 const gauge = (
+  id: string,
   label: string,
   value: number,
   display: string,
@@ -47,6 +48,7 @@ const gauge = (
   const pct = Math.max(0, Math.min(100, ((value - min) / (max - min)) * 100));
   const angle = 90 + pct * 1.8;
   return html` <div
+    id="${id}"
     class="gauge ${cls}"
     style="--pct: ${pct}; --angle: ${angle}deg"
   >
@@ -67,6 +69,7 @@ const wbgtGauge = (wbgtF: number, category: number) => {
   const angle = 90 + pct * 1.8;
   const trackGradient = wbgtTrackGradient();
   return html` <div
+    id="gauge-wbgt"
     class="gauge gauge--wbgt cat${category}"
     style="--pct: ${pct}; --angle: ${angle}deg"
   >
@@ -97,6 +100,7 @@ export const onRequest: PagesFunction = async (context) => {
     const body = html`
       ${wbgtGauge(wbgtF, category)}
       ${gauge(
+        "gauge-temp",
         "Temperature",
         CtoF(Ta),
         `${CtoF(Ta).toFixed(1)}°F`,
@@ -104,9 +108,10 @@ export const onRequest: PagesFunction = async (context) => {
         -20,
         120,
       )}
-      ${gauge("Humidity", RH, `${RH.toFixed(0)}%`, "gauge--rh", 0, 100)}
-      ${gauge("Cloud Cover", C, `${C.toFixed(0)}%`, "gauge--cloud", 0, 100)}
+      ${gauge("gauge-rh", "Humidity", RH, `${RH.toFixed(0)}%`, "gauge--rh", 0, 100)}
+      ${gauge("gauge-cloud", "Cloud Cover", C, `${C.toFixed(0)}%`, "gauge--cloud", 0, 100)}
       ${gauge(
+        "gauge-pressure",
         "Surface Pressure",
         Pa,
         `${Pa.toFixed(0)} hPa`,
@@ -115,6 +120,7 @@ export const onRequest: PagesFunction = async (context) => {
         1050,
       )}
       ${gauge(
+        "gauge-radiation",
         "Direct Radiation",
         SR,
         `${SR.toFixed(0)} W/m²`,
@@ -123,6 +129,7 @@ export const onRequest: PagesFunction = async (context) => {
         1400,
       )}
       ${gauge(
+        "gauge-dewpoint",
         "Dewpoint",
         CtoF(Td),
         `${CtoF(Td).toFixed(1)}°F`,
