@@ -13,11 +13,12 @@ export const getData = async ({
   SR: number;
   Td: number;
   Pa: number;
+  Ws: number;
 }> => {
   const params = new URLSearchParams({
     latitude: String(latitude),
     longitude: String(longitude),
-    current: "temperature_2m,relative_humidity_2m,cloud_cover,surface_pressure",
+    current: "temperature_2m,relative_humidity_2m,cloud_cover,surface_pressure,wind_speed_10m",
     hourly: "direct_radiation,dewpoint_2m",
     timezone: "America/Chicago",
     forecast_days: "1",
@@ -30,10 +31,11 @@ export const getData = async ({
     relative_humidity_2m: RH,
     cloud_cover: C,
     surface_pressure: Pa,
+    wind_speed_10m: Ws,
   } = data.current;
   const SR = data.hourly.direct_radiation[0];
   const Td = data.hourly.dewpoint_2m[0];
-  return { Ta, RH, C, SR, Td, Pa };
+  return { Ta, RH, C, SR, Td, Pa, Ws };
 };
 
 export const getWetBulbTemperature = async (location: LatLong): Promise<number> => {
@@ -42,8 +44,8 @@ export const getWetBulbTemperature = async (location: LatLong): Promise<number> 
 };
 
 export const getWetBulbGlobeTemperature = async (location: LatLong): Promise<number> => {
-  const { Ta, RH, C, SR, Td, Pa } = await getData(location);
-  return calculateWetBulbGlobeTemperature(SR, C, Ta, Td, RH, Pa);
+  const { Ta, RH, C, SR, Td, Pa, Ws } = await getData(location);
+  return calculateWetBulbGlobeTemperature(SR, C, Ta, Td, RH, Pa, Ws);
 };
 
 export const FtoC = (F: number) => (F - 32) * (5 / 9);
@@ -85,10 +87,13 @@ export const calculateWetBulbGlobeTemperature = (
   Ta: number,
   Td: number,
   RH: number,
-  Pa: number
+  Pa: number,
+  Ws: number
 ) => {
   const Tw = calculateWetBulbTemperature(Ta, Td, RH, Pa);
-  const Tg = 0.01498 * SR * (1 - C / 100) + 1.184 * Ta - 0.0789 * RH - 2.739;
+  const solarGain = 0.01498 * SR * (1 - C / 100);
+  const windFactor = 1 + 0.1 * Math.sqrt(Ws);
+  const Tg = solarGain / windFactor + 1.184 * Ta - 0.0789 * RH - 2.739;
   return 0.7 * Tw + 0.2 * Tg + 0.1 * Ta;
 };
 

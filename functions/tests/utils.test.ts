@@ -32,7 +32,7 @@ describe("calculations", () => {
   });
 
   test("calculateWetBulbGlobeTemperature", () => {
-    const wbgt = calculateWetBulbGlobeTemperature(800, 20, FtoC(100), FtoC(78), 38, 1000);
+    const wbgt = calculateWetBulbGlobeTemperature(800, 20, FtoC(100), FtoC(78), 38, 1000, 10);
     expect(wbgt).toBeCloseTo(FtoC(88), -1);
   });
 

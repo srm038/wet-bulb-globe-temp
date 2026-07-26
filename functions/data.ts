@@ -92,8 +92,8 @@ export const onRequest: PagesFunction = async (context) => {
 
   try {
     const location = { latitude: +latitude, longitude: +longitude };
-    const { Ta, RH, C, SR, Td, Pa } = await getData(location);
-    const wbgt = calculateWetBulbGlobeTemperature(SR, C, Ta, Td, RH, Pa);
+    const { Ta, RH, C, SR, Td, Pa, Ws } = await getData(location);
+    const wbgt = calculateWetBulbGlobeTemperature(SR, C, Ta, Td, RH, Pa, Ws);
     const wbgtF = CtoF(wbgt);
     const category = getCategory(wbgtF) ?? 1;
 
@@ -111,13 +111,13 @@ export const onRequest: PagesFunction = async (context) => {
       ${gauge("gauge-rh", "Humidity", RH, `${RH.toFixed(0)}%`, "gauge--rh", 0, 100)}
       ${gauge("gauge-cloud", "Cloud Cover", C, `${C.toFixed(0)}%`, "gauge--cloud", 0, 100)}
       ${gauge(
-        "gauge-pressure",
-        "Surface Pressure",
-        Pa,
-        `${Pa.toFixed(0)} hPa`,
-        "gauge--pressure",
-        950,
-        1050,
+        "gauge-wind",
+        "Wind Speed",
+        Ws * 0.621371,
+        `${(Ws * 0.621371).toFixed(1)} mph`,
+        "gauge--wind",
+        0,
+        50,
       )}
       ${gauge(
         "gauge-radiation",

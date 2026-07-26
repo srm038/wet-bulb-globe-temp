@@ -185,16 +185,16 @@ body {
 .gauge--cloud .gauge-fill {
   display: none;
 }
-.gauge--pressure { --gauge-color: #3a0ca3; }
-.gauge--pressure .gauge-track {
+.gauge--wind { --gauge-color: #00bcd4; }
+.gauge--wind .gauge-track {
   background: conic-gradient(
     from 180deg at 50% 100%,
     #ffffff 90deg,
-    #455a64 270deg,
+    #0097a7 270deg,
     transparent 270deg
   );
 }
-.gauge--pressure .gauge-fill {
+.gauge--wind .gauge-fill {
   display: none;
 }
 .gauge--radiation { --gauge-color: #f77f00; }
